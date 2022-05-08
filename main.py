@@ -14,6 +14,13 @@ app = FastAPI()
 
 # Models
 
+class Countries(Enum):
+    venezuela = 'venezuela'
+    peru = 'peru'
+    argentina = 'argentina'
+    chile = 'chile'
+
+
 class HairColor(Enum):
     white = 'white'
     brown = 'brown'
@@ -22,9 +29,19 @@ class HairColor(Enum):
     red = 'red'
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str   
+    city: str = Field(
+        ...,
+        min_length=1,
+        max_length=180,
+    )
+    state: str = Field(
+        ...,
+        min_length=1,
+        max_length=180,
+    )
+    country: Countries = Field(
+        ...
+    )
 
 class Person(BaseModel):
     first_name: str = Field(
