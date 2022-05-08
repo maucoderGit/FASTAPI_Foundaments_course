@@ -1,9 +1,10 @@
 #Python
-from turtle import title
+from datetime import date as date_type
+from enum import Enum
 from typing import Optional
 
 #Pydanyic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 #FastAPI
 from fastapi import FastAPI, Path, Body, Query
@@ -13,17 +14,36 @@ app = FastAPI()
 
 # Models
 
-class Person(BaseModel):
-    first_name: str
-    last_name: str
-    birthday: str
-    hair_color: Optional[str] = None
-    is_married: Optional[bool] = None
+class HairColor(Enum):
+    white = 'white'
+    brown = 'brown'
+    black = 'black'
+    blonde = 'blonde'
+    red = 'red'
 
 class Location(BaseModel):
     city: str
     state: str
     country: str   
+
+class Person(BaseModel):
+    first_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    birthday: date_type = Field(
+        ...,
+        alias='date'
+        )
+    hair_color: Optional[HairColor] = Field(default=None)
+    is_married: Optional[bool] = Field(default=None)
+
 
 @app.get('/')
 def home():
