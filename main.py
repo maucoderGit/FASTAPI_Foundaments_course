@@ -88,7 +88,7 @@ class Person(BaseModel):
             'example': {
                 'first_name': 'Mauricio',
                 'last_name': 'Gonzalez Falcon',
-                'birthday': '2003-10-30',
+                'date': '2003-10-30',
                 'hair_color': 'black',
                 'is_married': False
             }
@@ -113,12 +113,14 @@ def show_person(
         None, min_length=1,
         max_length=50,
         title='Person Name',
-        description='This is the person name, It\'s between 1 and 50 characters'
+        description='This is the person name, It\'s between 1 and 50 characters',
+        example='Rocio'
         ),
-    born_day: Optional[str] = Query(
+    born_day: Optional[date_type] = Query(
         ...,
         title='Person Age',
-        description='This is the person age. It\'s required'
+        description='This is the person age. It\'s required',
+        example='2022-05-08'
         ),
 ):
     return {name: born_day}
@@ -131,7 +133,8 @@ def show_person(
         ...,
         gt=0,
         title='User id',
-        description='This is the User Id, It\'s required'
+        description='This is the User Id, It\'s required',
+        example=3
         )
 ):
     return {person_id: 'It exists!'}
@@ -145,6 +148,7 @@ def update_person(
         title='Person ID',
         description='This is the person ID',
         gt=0,
+        example=3
     ),
     person: Person = Body(...),
     location: Location = Body(...)
