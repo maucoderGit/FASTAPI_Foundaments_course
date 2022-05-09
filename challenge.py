@@ -7,6 +7,7 @@
 
 from datetime import date as date_type
 from enum import Enum
+from msilib import schema
 from typing import Optional
 
 #Pydanyic
@@ -37,6 +38,7 @@ class Person(BaseModel):
     email: EmailStr = Field(...)
     birthday: date_type = Field(...)
     country: str = Field(...)
+
 
 app = FastAPI()
 

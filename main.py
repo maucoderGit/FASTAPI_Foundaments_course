@@ -32,34 +32,67 @@ class Location(BaseModel):
     city: str = Field(
         ...,
         min_length=1,
-        max_length=180,
+        max_length=100,
+        example='Caracas city'
     )
     state: str = Field(
         ...,
         min_length=1,
         max_length=180,
+        example='Caracas'
     )
     country: Countries = Field(
-        ...
+        ...,
+        example='venezuela'
     )
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'city': 'caracas',
+                'state': 'distrito capital',
+                'country': 'venezuela'
+            }
+        }
+    
 
 class Person(BaseModel):
     first_name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example='Mauricio'
         )
     last_name: str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example='Gonzalez Falcon'
         )
     birthday: date_type = Field(
         ...,
-        alias='date'
+        alias='date',
+        example='2003-10-30'
         )
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+    hair_color: Optional[HairColor] = Field(
+        default=None,
+        example='black',
+        )
+    is_married: Optional[bool] = Field(
+        default=None,
+        example=False
+        )
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'first_name': 'Mauricio',
+                'last_name': 'Gonzalez Falcon',
+                'date': '2003-10-30',
+                'hair_color': 'black',
+                'is_married': False
+            }
+        }
 
 
 @app.get('/')
