@@ -88,7 +88,7 @@ class Person(BaseModel):
             'example': {
                 'first_name': 'Mauricio',
                 'last_name': 'Gonzalez Falcon',
-                'date': '2003-10-30',
+                'birthday': '2003-10-30',
                 'hair_color': 'black',
                 'is_married': False
             }
