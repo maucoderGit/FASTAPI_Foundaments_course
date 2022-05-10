@@ -16,7 +16,7 @@ from pydantic import BaseModel, EmailStr, Field, PaymentCardNumber
 
 # FastAPI
 
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query, status
 
 # MODELS
 
@@ -46,7 +46,10 @@ app = FastAPI()
 def home():
     return {'Hello': 'World'}
 
-@app.post('/dotanions/')
+@app.post(
+    path='/dotanions/',
+    status_code=status.HTTP_202_OK
+    )
 def donations(
     ong_id:Optional[int] = Query(
         default=None,
@@ -55,8 +58,6 @@ def donations(
         description='This is the ONG ID',
     ),
     person: Optional[Person]= Body(default=None),
-    payment: Optional[Payment]= Body(default=None),
 ):
     results = (dict(person))
-    results.update(dict(payment))
     return {ong_id: results}
