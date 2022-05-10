@@ -46,17 +46,7 @@ class Location(BaseModel):
         example='venezuela'
     )
 
-#    class Config:
-#        schema_extra = {
-#            'example': {
-#                'city': 'caracas',
-#                'state': 'distrito capital',
-#                'country': 'venezuela'
-#            }
-#        }
-    
-
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(
         ...,
         min_length=1,
@@ -82,28 +72,21 @@ class Person(BaseModel):
         default=None,
         example=False
         )
-    Password: str = Field(
+
+class Person(PersonBase):
+        Password: str = Field(
         ...,
-        min_length=8
+        min_length=8,
+        example= 'MySecurePassword1234!"#$'
         )
 
-#        class Config:
-#            schema_extra = {
-#                'example': {
-#                    'first_name': 'Mauricio',
-#                    'last_name': 'Gonzalez Falcon',
-#                    'date': '2003-10-30',
-#                    'hair_color': 'black',
-#                    'is_married': False
-#                }
-#            }
 
 @app.get('/')
 def home():
     return {'Hello': 'World'}
 
 
-@app.post('/person/new', response_model=Person, response_model_exclude={'Password'})
+@app.post('/person/new', response_model=Person)
 def create_person(person: Person = Body(...)):
     return person
 
