@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 #FastAPI
 from fastapi import FastAPI, Path, Body, Query
-
+from fastapi import status
 
 app = FastAPI()
 
@@ -17,9 +17,9 @@ app = FastAPI()
 class Countries(Enum):
     venezuela = 'venezuela'
     peru = 'peru'
+    
     argentina = 'argentina'
     chile = 'chile'
-
 
 class HairColor(Enum):
     white = 'white'
@@ -81,19 +81,31 @@ class Person(PersonBase):
         )
 
 
-@app.get('/')
+@app.get(
+    path='/',
+    status_code=status.HTTP_200_OK
+    )
 def home():
     return {'Hello': 'World'}
 
+# Request and response body
 
-@app.post('/person/new', response_model=Person)
-def create_person(person: Person = Body(...)):
+@app.post(
+    path='/person/new', 
+    response_model=Person,
+    status_code=status.HTTP_201_CREATED)
+def create_person(
+    person: Person = Body(...)
+    ):
     return person
 
 # Validations: Query Parameters
 # min_length and max_length both are query validators
 
-@app.get('/person/detail')
+@app.get(
+    path='/person/detail',
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     name: Optional[str] = Query(
         None, min_length=1,
@@ -113,7 +125,10 @@ def show_person(
 
 # Validations: Path parameters
 
-@app.get('/person/detail{person_id}')
+@app.get(
+    path='/person/detail{person_id}',
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     person_id: int = Path(
         ...,
@@ -127,7 +142,10 @@ def show_person(
 
 # Validations: Request Body
 
-@app.put('/person/{person_id}')
+@app.put(
+    path='/person/{person_id}',
+    status_code=status.HTTP_200_OK
+    )
 def update_person(
     person_id: int = Path(
         ...,
