@@ -7,7 +7,7 @@ from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
 
 #FastAPI
-from fastapi import FastAPI, Form, Path, Body, Query, Header, Cookie
+from fastapi import FastAPI, Form, Path, Body, Query, Header, Cookie, UploadFile, File
 from fastapi import status
 
 app = FastAPI()
@@ -216,3 +216,16 @@ def contact(
     ads: Optional[str] = Cookie(default=None),
 ):
     return user_agent
+
+@app.post(
+    path='/post-image',
+    status_code=status.HTTP_202_ACCEPTED
+    )
+def post_image(
+    image: UploadFile = File(...),
+):
+    return {
+        'Filename': image.filename,
+        'Format': image.content_type,
+        'Size(kb)': round((len(image.file.read()) / 1024), ndigits=2)
+    }
