@@ -4,10 +4,10 @@ from enum import Enum
 from typing import Optional
 
 #Pydanyic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 #FastAPI
-from fastapi import FastAPI, Form, Path, Body, Query
+from fastapi import FastAPI, Form, Path, Body, Query, Header, Cookie
 from fastapi import status
 
 app = FastAPI()
@@ -175,6 +175,7 @@ def update_person(
     result.update(dict(location))
     return result
 
+# Forms
 
 @app.post(
     path='/login',
@@ -186,3 +187,32 @@ def login(
     Password: str = Form(...)
     ):
     return LoginOut(username=Username)
+
+# Coockie & Header
+
+@app.post(
+    path='/contact',
+    status_code=status.HTTP_200_OK,
+)
+def contact(
+    first_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1,
+    ),
+    last_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1,
+    ),
+    email: EmailStr = Form(
+        ...,
+    ),
+    message: str = Form(
+        ...,
+        min_length=20
+    ),
+    user_agent: Optional[str] = Header(default=None),
+    ads: Optional[str] = Cookie(default=None),
+):
+    return user_agent
