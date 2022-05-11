@@ -7,7 +7,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 #FastAPI
-from fastapi import FastAPI, Path, Body, Query
+from fastapi import FastAPI, Form, Path, Body, Query
 from fastapi import status
 
 app = FastAPI()
@@ -45,6 +45,20 @@ class Location(BaseModel):
         ...,
         example='venezuela'
     )
+
+class LoginOut(BaseModel):
+    username: str = Field(
+        ...,
+        max_length=25,
+        example='maucoder'
+        )
+    message: str = Field(
+        default='Login Succesfuly!',
+        max_length=80,        
+        )
+    
+class LoginPassword(LoginOut):
+    password: str = Field(...)
 
 class PersonBase(BaseModel):
     first_name: str = Field(
@@ -160,3 +174,15 @@ def update_person(
     result = dict(person)
     result.update(dict(location))
     return result
+
+
+@app.post(
+    path='/login',
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK
+    )
+def login(
+    Username: str = Form(...),
+    Password: str = Form(...)
+    ):
+    return LoginOut(username=Username)
