@@ -103,7 +103,14 @@ class Person(PersonBase):
     )
 def home():
     """
+    Home Page
     
+    This Path operation shows a JSON message with keys: "Hello" and "world" as values.
+    
+    Parameters:
+    - This function doesn't receive parameters
+
+    Returns a JSON with key: "hello", value: "world"
     """
     return {'Hello': 'World'}
 
@@ -113,11 +120,23 @@ def home():
     path='/person/new', 
     response_model=Person,
     status_code=status.HTTP_201_CREATED,
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Create Persons in the app'
     )
 def create_person(
     person: Person = Body(...)
     ):
+    """
+    Create Person
+    
+    This Path operation creates a person in the app and saves the information in the database
+    
+    Parameters:
+    - Request body parameter
+        - **person: Person** -> A person model with first name, last name, birthday, hair_color, is_married
+    
+    Returns a person model with first name, last name, birthday, hair_color, marital_status
+    """
     return person
 
 # Validations: Query Parameters
@@ -130,19 +149,32 @@ def create_person(
     )
 def show_person(
     name: Optional[str] = Query(
-        None, min_length=1,
+        default=None,
+         min_length=1,
         max_length=50,
         title='Person Name',
         description='This is the person name, It\'s between 1 and 50 characters',
         example='Rocio'
         ),
     born_day: Optional[date_type] = Query(
-        ...,
+        default= None,
         title='Person Age',
         description='This is the person age. It\'s required',
         example='2022-05-08'
         ),
 ):
+    """
+    Show Person
+    
+    This Path operation Shows a person in the app
+    
+    Parameters:
+    - Request body parameter
+        - **name: Str** -> A optional person name
+        - **born_day: Date_type** A optional birthday
+
+    Returns a person's data with first name, birthday
+    """
     return {name: born_day}
 
 # Validations: Path parameters
@@ -163,6 +195,17 @@ def show_person(
         example=3
         )
 ):
+    """
+    Show Person
+    
+    This Path operation validates if a person exists in the database
+    
+    Parameters:
+    - Request body parameter
+        - **id: int** -> A person id
+    
+    Returns a message with id, message if it exists or doesn't exist
+    """
     if person_id not in persons:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -189,6 +232,19 @@ def update_person(
     person: Person = Body(...),
     location: Location = Body(...)
 ):
+    """
+    Update Person
+
+    Gets a person id, Person Model with the first name, last name, birthday, hair color, marital status and update information in a database
+    
+    Parameters:
+    - Request body parameter
+        - **person_id: int** -> an id from an user
+        - **person: Person** -> A person model with first name, last name, birthday, hair color, marrital status
+        - **location: Location** -> A location Model that receives an city, country and status
+    
+    Returns a New Person model with first name, last name, birthday, hair color, married status, and Location with city, status, and country
+    """
     result = dict(person)
     result.update(dict(location))
     return result
@@ -205,6 +261,18 @@ def login(
     Username: str = Form(...),
     Password: str = Form(...)
     ):
+    """
+    Login
+
+    This Path operation gets the username and password to validate the user account
+    
+    Parameters:
+    - Request Body
+        - **Username: str** -> Obligatory Form model
+        - **Password: str** -> Obligatory Form model
+    
+    returns a LoginOut model with a username
+    """
     return LoginOut(username=Username)
 
 # Coockie & Header
@@ -235,6 +303,22 @@ def contact(
     user_agent: Optional[str] = Header(default=None),
     ads: Optional[str] = Cookie(default=None),
 ):
+    """
+    Contact
+
+    This Path operation gets information to contact developers.
+    
+    Parameters:
+    - Request Body:
+        - **First_name: str** -> Obligatory Form Object, Person's last name
+        - **Last_name: str** -> Obligatory Form Object. Person's last name
+        - **Email: EmailStr** -> Person's email adress, Obligatory
+        - **message: str** -> Form obligatory object, gets user message
+        - **user_agent: Optional[str]** -> gets parameter HEADER.
+        - **ads: Optional[str]** -> Cookie's from user
+    
+    Returns user_agent model with first name, last name, email, header, cookies
+    """
     return user_agent
 
 @app.post(
@@ -245,6 +329,17 @@ def contact(
 def post_image(
     image: UploadFile = File(...),
 ):
+    """
+    Post Image
+
+    This Path Operator gets a user image with Filename, size, and format.
+
+    Parameters:
+    - Request Body:
+        - **Image: UploadFile** -> Gets an obligatory user image
+
+    returns a JSON of an image with filename, format, and size.
+    """
     return {
         'Filename': image.filename,
         'Format': image.content_type,
